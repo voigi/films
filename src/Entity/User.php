@@ -6,9 +6,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
- * @UnityEntity(fields={"username"},message="Cet utilisateur existe dejà")
+ * @UniqueEntity(fields={"username"}, message="Cet utilisateur existe déjà")
  */
 class User implements UserInterface
 {

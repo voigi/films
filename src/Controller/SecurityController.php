@@ -55,16 +55,7 @@ class SecurityController extends AbstractController
             ];
             return new JsonResponse($data,500);
         
-        }
-        public function login(Request $request)
-        {
-            $user = $this->getUser();
-            return $this->json([
-                'username'=>$user->getUsername(),
-                'roles'=>$user->getRoles()
-        
-            ]);
-        }
+        }        
 }
 
 /**
