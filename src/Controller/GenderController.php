@@ -55,4 +55,52 @@ class GenderController extends AbstractController
         ]);
         return new Response($genders, 200, ['Content-Type' => 'application/json']);
     }
+
+    /**
+     * @Route("/add", methods={"POST"})
+     */
+    public function add(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $gender = new Gender($data['name']);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($gender);
+        $entityManager->flush();
+        
+        return $this->json($data);
+    }
+
+   /**
+     * @Route("/delete/{id}", methods={"DELETE"})
+     */
+    public function delete(GenderRepository $genderRepository, $id)
+    {
+        $gender = $genderRepository->find($id);
+
+        $entityManager = $this->getDoctrine()->getManager();
+
+        $entityManager->remove($gender);
+        $entityManager->flush();       
+        return $this->json("Genre supprime");
+    }
+
+    /**
+     * @Route("/edit/{id}", methods={"PUT"})
+     */
+    public function edit(GenderRepository $genderRepository, Request $request, $id)
+    {
+        $data= json_decode($request->getContent(), true);
+        $gender = $genderRepository->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        if (!$gender) {
+            throw $this->createNotFoundException(
+                'No genre found for id '.$id
+            );
+        }      
+        $gender->setName($data['name']);
+       
+        $entityManager->flush();
+        return $this->json("genre edite");
+    }
 }

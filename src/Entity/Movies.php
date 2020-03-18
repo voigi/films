@@ -54,9 +54,16 @@ class Movies
      */
     private $gender;
 
-    public function __construct()
+    public function __construct($title,$description,$year,$picture,$note,$gender,$actor=[])
     {
+        $this->title = $title;
+        $this->description = $description;
+        $this->year = $year;
+        $this->picture = $picture;
+        $this->note = $note;
+        $this->gender= $gender;
         $this->actor = new ArrayCollection();
+        $this->actor = $actor;
     }
 
     public function getId(): ?int

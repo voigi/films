@@ -28,8 +28,9 @@ class Gender
      */
     private $movies;
 
-    public function __construct()
+    public function __construct($name)
     {
+        $this->name = $name;
         $this->movies = new ArrayCollection();
     }
 
