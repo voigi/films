@@ -7,6 +7,7 @@ use App\Repository\GenderRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
 // A Mettre pour serialiser le retour du service en json
 use Symfony\Component\Serializer\Serializer;
@@ -37,6 +38,21 @@ class GenderController extends AbstractController
         ]);
         return new Response($gender, 200, ['Content-Type' => 'application/json']);
     }
+
+    /**
+     * @Route("/add", methods={"POST"})
+     */
+    public function add(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $gender = new Gender($data['name']);
+
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($gender);
+        $entityManager->flush();
+        
+        return $this->json($data);
+    }
     /**
      * @Route("/{id}")
      */
@@ -56,20 +72,7 @@ class GenderController extends AbstractController
         return new Response($genders, 200, ['Content-Type' => 'application/json']);
     }
 
-    /**
-     * @Route("/add", methods={"POST"})
-     */
-    public function add(Request $request)
-    {
-        $data = json_decode($request->getContent(), true);
-        $gender = new Gender($data['name']);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($gender);
-        $entityManager->flush();
-        
-        return $this->json($data);
-    }
 
    /**
      * @Route("/delete/{id}", methods={"DELETE"})

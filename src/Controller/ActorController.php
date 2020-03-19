@@ -7,19 +7,22 @@ use App\Repository\ActorRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Component\Routing\Annotation\Route;
+
 // A Mettre pour serialiser le retour du service en json
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
-/**
+    /**
      * @Route("/actor")
      */
 class ActorController extends AbstractController
 {
     /**
      * @Route("/")
+     * @IsGranted({"ROLE_ADMIN"})
      */
     public function api(ActorRepository $movieRepository):Response
     {
@@ -36,6 +39,27 @@ class ActorController extends AbstractController
         ]);
         return new Response($actors, 200, ['Content-Type' => 'application/json']);
     }
+
+    
+    /**
+     * @Route("/new", methods={"POST"})
+     * 
+     */
+    public function apiNew(Request $request):Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $birth = new \Datetime($data['birth']);
+
+        $actor = new Actor($data['name'],$data['firstname'],$birth,$data['gender'],$data['nationality']);
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($actor);
+        $entityManager->flush();
+        return $this->json($data);
+       // return var_dump($actor);
+       
+    }
+
        /**
      * @Route("/{id}")
      */
@@ -54,4 +78,48 @@ class ActorController extends AbstractController
         ]);
         return new Response($actors, 200, ['Content-Type' => 'application/json']);
     }
+
+    /**
+     * @Route("/delete/{id}", methods={"DELETE"})
+     */
+        public function delete(ActorRepository $actorRepository, $id)
+        {
+            $actor = $actorRepository->find($id);
+                  
+         
+       
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->remove($actor);
+        $entityManager->flush();
+        return $this->json("Actor supprimé");
+    }
+
+    /**
+     * @Route("/edit/{id}", methods={"PUT"})
+     */
+    public function edit(ActorRepository $actorRepository, Request $request, $id)
+    {
+        $data= json_decode($request->getContent(), true);
+        $actor = $actorRepository->find($id);
+        $entityManager = $this->getDoctrine()->getManager();
+        if (!$actor) {
+            throw $this->createNotFoundException(
+                'No actor found for id '.$id
+            );
+        }      
+        $birth= new \Datetime($data['birth']);
+
+        $actor->setName($data['name']);
+        $actor->setFirstname($data['firstname']);
+        $actor->setBirth($birth);
+        $actor->setGender($data['gender']);
+        $actor->setNationality($data['nationality']);
+    
+        $entityManager->flush();
+        return $this->json("Actor edite");
+    }
+    
+
+
+
 }
