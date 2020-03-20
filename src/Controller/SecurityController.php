@@ -22,73 +22,40 @@ class SecurityController extends AbstractController
     /**
      * @Route("/register",methods={"POST"})
      */
-    // public function register(Request $request,UserPasswordEncoderInterface $passwordEncoder,EntityManagerInterface $entityManager,SerializerInterface $serializer,ValidatorInterface $validator)
-    // {
-//         $values = json_decode($request->getContent());
-//         if(isset($values->username,$values->password)){
-//             $user= new User();
-//             $user->setUsername($values->username);
-//             $user->setPassword($passwordEncoder->encodePassword($user,$values->password));
-//             $user->setRoles($user->getRoles());
-//             $errors = $validator->validate($user);
-//             if(count($errors)){
-//                 $errors = $serializer->serialize($errors,'json');
-//                 return new Response($errors,500,[
-//                    'Content-Type' => 'application/json' 
+    public function register(Request $request,UserPasswordEncoderInterface $passwordEncoder,EntityManagerInterface $entityManager,SerializerInterface $serializer,ValidatorInterface $validator)
+    {
+        $values = json_decode($request->getContent());
+        if(isset($values->username,$values->password)){
+            $user= new User();
+            $user->setUsername($values->username);
+            $user->setPassword($passwordEncoder->encodePassword($user,$values->password));
+            $user->setRoles($user->getRoles());
+            $errors = $validator->validate($user);
+            if(count($errors)){
+                $errors = $serializer->serialize($errors,'json');
+                return new Response($errors,500,[
+                   'Content-Type' => 'application/json' 
 
-//                 ]);
+                ]);
                 
-//             }
-//             $entityManager->persist($user);
-//             $entityManager->flush();
+            }
+            $entityManager->persist($user);
+            $entityManager->flush();
 
-//             $data =[
-//                 'status'=> 201,
-//                 'message'=>'L\'utilisateur a été créé'
-//             ];
+            $data =[
+                'status'=> 201,
+                'message'=>'L\'utilisateur a été créé'
+            ];
 
-//             return new JsonResponse($data,201);
-//         }
-//             $data =[
-//                 'status'=> 500,
-//                 'message'=>'Vous devez renseigner les clés email et password'
-//             ];
-//             return new JsonResponse($data,500);
-        
-//         }        
-// }
-public function register(Request $request, UserPasswordEncoderInterface $passwordEncoder, EntityManagerInterface $entityManager, SerializerInterface $serializer, ValidatorInterface $validator)
-{
-    $values = json_decode($request->getContent());
-    if(isset($values->username,$values->password)) {
-        $user = new User();
-        $user->setUsername($values->username);
-        $user->setPassword($passwordEncoder->encodePassword($user, $values->password));
-        $user->setRoles(['ROLE_ADMIN']);
-        $errors = $validator->validate($user);
-        if(count($errors)) {
-            $errors = $serializer->serialize($errors, 'json');
-            return new Response($errors, 500, [
-                'Content-Type' => 'application/json'
-            ]);
+            return new JsonResponse($data,201);
         }
-        $entityManager->persist($user);
-        $entityManager->flush();
-
-        $data = [
-            'status' => 201,
-            'message' => 'L\'utilisateur a été créé'
-        ];
-
-        return new JsonResponse($data, 201);
-    }
-    $data = [
-        'status' => 500,
-        'message' => 'Vous devez renseigner les clés username et password'
-    ];
-    return new JsonResponse($data, 500);
-}
-
+            $data =[
+                'status'=> 500,
+                'message'=>'Vous devez renseigner les clés email et password'
+            ];
+            return new JsonResponse($data,500);
+        
+        }        
 }
 
 

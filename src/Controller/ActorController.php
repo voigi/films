@@ -22,7 +22,7 @@ class ActorController extends AbstractController
 {
     /**
      * @Route("/")
-     * @IsGranted({"ROLE_ADMIN"})
+     *
      */
     public function api(ActorRepository $movieRepository):Response
     {
