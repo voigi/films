@@ -39,6 +39,46 @@ class ActorController extends AbstractController
         ]);
         return new Response($actors, 200, ['Content-Type' => 'application/json']);
     }
+/**
+     * @Route("/feminin")
+     *
+     */
+    //fonction pour la liste des actrices
+    public function feminin(ActorRepository $movieRepository):Response
+    {
+        
+        $encoders = [new JsonEncoder()]; // If no need for XmlEncoder
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $actors = $movieRepository->findBy(['gender' => 'F']);
+        //var_dump($serializer->serialize($authors, 'json'));
+        $actors = $serializer->serialize($actors, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+        return new Response($actors, 200, ['Content-Type' => 'application/json']);
+    }
+    /**
+     * @Route("/masculin")
+     *
+     */
+    //fonction pour la liste des acteurs
+    public function masculin(ActorRepository $movieRepository):Response
+    {
+        
+        $encoders = [new JsonEncoder()]; // If no need for XmlEncoder
+        $normalizers = [new ObjectNormalizer()];
+        $serializer = new Serializer($normalizers, $encoders);
+        $actors = $movieRepository->findBy(['gender' => 'M']);
+        //var_dump($serializer->serialize($authors, 'json'));
+        $actors = $serializer->serialize($actors, 'json', [
+            'circular_reference_handler' => function ($object) {
+                return $object->getId();
+            }
+        ]);
+        return new Response($actors, 200, ['Content-Type' => 'application/json']);
+    }
 
     
     /**

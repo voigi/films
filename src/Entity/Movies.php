@@ -28,10 +28,7 @@ class Movies
      */
     private $description;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $year;
+ 
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -54,11 +51,16 @@ class Movies
      */
     private $gender;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $year;
+
     public function __construct($title,$description,$year,$picture,$note,$gender,$actor=[])
     {
         $this->title = $title;
         $this->description = $description;
-        $this->year = $year;
+        $this->year =$year;
         $this->picture = $picture;
         $this->note = $note;
         $this->gender= $gender;
@@ -95,17 +97,7 @@ class Movies
         return $this;
     }
 
-    public function getYear(): ?\DateTimeInterface
-    {
-        return $this->year;
-    }
 
-    public function setYear(\DateTimeInterface $year): self
-    {
-        $this->year = $year;
-
-        return $this;
-    }
 
     public function getPicture(): ?string
     {
@@ -165,6 +157,18 @@ class Movies
     public function setGender(?Gender $gender): self
     {
         $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+
+    public function setYear(int $year): self
+    {
+        $this->year = $year;
 
         return $this;
     }

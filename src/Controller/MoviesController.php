@@ -31,7 +31,7 @@ class MoviesController extends AbstractController
         $encoders = [new JsonEncoder()]; // If no need for XmlEncoder
         $normalizers = [new ObjectNormalizer()];
         $serializer = new Serializer($normalizers, $encoders);
-        $movies = $movieRepository->findAll();
+        $movies = $movieRepository->findBy([],['year'=>'DESC']); // Modification de la requête pour avoir des dates dans l'order décroissantes
         //var_dump($serializer->serialize($authors, 'json'));
         $movies = $serializer->serialize($movies, 'json', [
             'circular_reference_handler' => function ($object) {
@@ -53,12 +53,12 @@ class MoviesController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        // on  va chercher pour l'element date une nouvelle datetime
-        $time = new \DateTime($data['year']);
-        // genre est ici la cle etrangere de la table movie
+       
+       
+        // genre est ici la cle étrangere de la table movie
         $genre = $genderRepository->find($data['gender_id']);
 
-        $movie = new Movies($data['title'], $data['description'], $time, $data['picture'], $data['note'], $genre);
+        $movie = new Movies($data['title'], $data['description'], $data['year'], $data['picture'], $data['note'], $genre);
 
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($movie);
